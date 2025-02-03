@@ -1,0 +1,34 @@
+.productListContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 150px;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+}
+
+.productGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.product-page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+@media (max-width: 900px) {
+    .productGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .productGrid {
+        grid-template-columns: 1fr;
+    }
+}

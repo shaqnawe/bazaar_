@@ -1,0 +1,94 @@
+.favoritesContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 150px;
+    background-color: #f9f9f9;
+    min-height: calc(100vh - 100px);
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 32px;
+    color: #333;
+}
+
+.favoritesList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.favoriteItem {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.itemDetails {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+}
+
+.itemName {
+    font-size: 20px;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.itemPrice {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.removeButton {
+    background: #ff0000;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 8px;
+    width: 150px;
+}
+
+.removeButton:hover {
+    background: #cc0000;
+}
+
+.itemImageContainer {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.itemImage {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.loading {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: gray;
+}
+
+.emptyMessage {
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+}
