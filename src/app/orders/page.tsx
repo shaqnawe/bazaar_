@@ -13,14 +13,14 @@ interface OrderItem {
     name: string;
     price: number;
     quantity: number;
-    imageUrl: string;
+    imageUrl?: string;
 }
 
 interface Order {
     id: string;
     items: OrderItem[];
     total: number;
-    date: string; // This will be the UTC date string from createdAt
+    date: string; // UTC date string
 }
 
 const Orders: React.FC = () => {
@@ -28,7 +28,7 @@ const Orders: React.FC = () => {
     const [orders, setOrders] = useState<Order[]>([]);
 
     useEffect(() => {
-        if (!user) return;
+        if (!user || loading) return;
 
         const ordersRef = collection(db, `users/${user.uid}/orders`);
         const unsubscribe = onSnapshot(
@@ -38,13 +38,13 @@ const Orders: React.FC = () => {
                     const data = doc.data();
                     return {
                         id: doc.id,
-                        items: data.items,
+                        items: data.items ?? [],
                         date: data.timestamp ? data.timestamp.toDate().toUTCString() : "N/A",
-                        total: data.total
-                    } as Order;
+                        total: data.total ?? 0,
+                    };
                 });
                 setOrders(ordersData);
-                console.log(ordersData)
+                // console.log(ordersData)
             },
             (error) => {
                 console.error("Error fetching orders: ", error);
@@ -52,7 +52,7 @@ const Orders: React.FC = () => {
         );
 
         return () => unsubscribe();
-    }, [user]);
+    }, [user, loading]);
 
     if (loading) {
         return <p className={styles.loading}>Loading orders...</p>;
@@ -60,6 +60,11 @@ const Orders: React.FC = () => {
 
     if (!user) {
         return <p className={styles.loading}>User not authenticated.</p>;
+    }
+
+    // If the user doens't have any order history
+    if (orders.length === 0) {
+        return <div className={styles.ordersContainer}><h2>No orders found.</h2></div>;
     }
 
     return (
@@ -80,9 +85,12 @@ const Orders: React.FC = () => {
                                         <Image
                                             // Workaround to not pass urls for actual images
                                             // but still diplay on orders page.
-                                            src={thumbNail}
+                                            src={item.imageUrl || thumbNail}
                                             alt={item.name}
                                             className={styles.orderImage}
+                                            width={100}
+                                            height={100}
+                                            priority
                                         />
                                     </div>
                                 </div>
