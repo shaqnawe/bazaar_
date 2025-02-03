@@ -7,6 +7,7 @@ interface Product {
     id: string;
     name: string;
     price: number;
+    imageUrl?: string;
 }
 
 const ProductList: React.FC<{ products: Product[] }> = ({ products }) => {
