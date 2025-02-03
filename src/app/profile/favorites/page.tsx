@@ -1,11 +1,11 @@
 'use client';
 
+import { removeFromFavorites } from '@/utils/favoritesUtils';
+import { collection, onSnapshot } from 'firebase/firestore';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../../context/AuthContext';
-import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import Image from 'next/image';
-import { removeFromFavorites } from '@/utils/favoritesUtils';
 import styles from './Favorites.module.css';
 
 interface FavoriteItem {

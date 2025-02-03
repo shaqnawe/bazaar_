@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useUser } from '../context/AuthContext';
 import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import thumbNail from '../../../public/static/images/avatar.jpg';
+import { useUser } from '../context/AuthContext';
+import { db } from '../lib/firebase';
 import styles from './Orders.module.css';
 
 interface OrderItem {
@@ -77,7 +78,9 @@ const Orders: React.FC = () => {
                                     </div>
                                     <div className={styles.orderImageContainer}>
                                         <Image
-                                            src={item.imageUrl}
+                                            // Workaround to not pass urls for actual images
+                                            // but still diplay on orders page.
+                                            src={thumbNail}
                                             alt={item.name}
                                             className={styles.orderImage}
                                         />

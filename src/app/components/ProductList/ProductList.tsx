@@ -1,16 +1,14 @@
 'use client';
+
+import { Product } from '@/types/product';
 import React from 'react';
 import ProductCard from '../ProductCard/ProductCard';
 import styles from './ProductList.module.css';
 
-interface Product {
-    id: string;
-    name: string;
-    price: number;
-    imageUrl?: string;
+interface ProductListProps {
+    products: Product[];
 }
-
-const ProductList: React.FC<{ products: Product[] }> = ({ products }) => {
+const ProductList: React.FC<ProductListProps> = ({ products }) => {
     return (
         <div className={styles.productListContainer}>
             <h2>Products</h2>

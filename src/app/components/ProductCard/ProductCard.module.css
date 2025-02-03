@@ -16,6 +16,11 @@
     transform: scale(1.05);
 }
 
+.productImage {
+    height: 10rem;
+    width: 10rem;
+}
+
 .productCard h3 {
     margin: 10px 0;
     font-size: 18px;

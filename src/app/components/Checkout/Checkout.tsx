@@ -1,13 +1,12 @@
-// /components/Checkout.tsx
 'use client';
 
+import { handleError } from '@/utils/errorUtils';
+import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { db } from '../../lib/firebase';
-import { collection, addDoc, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { useUser } from '../../context/AuthContext';
 import { useCart } from '../../context/cartContext';
-import { handleError } from '@/utils/errorUtils';
+import { db } from '../../lib/firebase';
 import styles from './Checkout.module.css';
 
 interface CheckoutItem {

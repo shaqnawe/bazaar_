@@ -22,7 +22,7 @@ export const addToFavorites = async (product: Product) => {
             await setDoc(favRef, {
                 name: product.name,
                 price: product.price,
-                imageUrl: product.imageUrl || '/static/images/default.jpg'
+                imageUrl: product.imageUrl || "/static/images/avatar.jpg"
             });
             console.log("Item added to favorites!");
         } else {
