@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -12,10 +12,12 @@ RUN npm install
 COPY . .
 
 # Build the Next.js app
+RUN chmod +x /usr/local/bin/node
+RUN chmod +x /usr/local/bin/npm
 RUN npm run build
 
 # Stage 2: Run the application
-FROM node:18-alpine AS runner
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 
@@ -24,7 +26,7 @@ ENV NODE_ENV=production
 
 # Copy necessary files from the builder stage
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/next.config.js ./
+# COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 
