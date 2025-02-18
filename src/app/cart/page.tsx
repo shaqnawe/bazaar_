@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useCart } from '../context/cartContext';
+import React from 'react';
 import { removeFromCart, updateCartItem } from '../../utils/cartUtils';
+import ProductImage from '../components/ProductImage';
+import { useCart } from '../context/cartContext';
 import styles from './Cart.module.css';
 
 const Cart: React.FC = () => {
@@ -32,8 +33,12 @@ const Cart: React.FC = () => {
                     <ul className={styles.cartList}>
                         {cartData.map(item => (
                             <li key={item.id} className={styles.cartItem}>
+                                <ProductImage
+                                    src={item.imageUrl}
+                                    alt={item.name}
+                                />
                                 <span>{item.name}</span>
-                                <span>${item.price.toFixed(2)}</span>
+                                <span>${item.price / 100}</span>
                                 <span>Quantity: {item.quantity}</span>
                                 <button onClick={() => updateCartItem(item.id, item.quantity + 1)}>+</button>
                                 <button onClick={() => updateCartItem(item.id, item.quantity - 1)}>-</button>

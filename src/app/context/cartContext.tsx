@@ -1,15 +1,17 @@
 'use client';
 
-import React, { createContext, useState, useEffect, useContext } from 'react';
 import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useUser } from "../context/AuthContext";
+import { db } from "../lib/firebase";
 
 interface CartItem {
     id: string;
     name: string;
     price: number;
     quantity: number;
+    imageUrl: string;
+    description?: string;
 }
 
 interface CartContextType {
@@ -57,7 +59,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [user, loading]);
 
     useEffect(() => {
-        const total = cartData.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const total = cartData.reduce((sum, item) => sum + (item.price / 100) * item.quantity, 0);
         setGrandTotal(total);
     }, [cartData]);
 

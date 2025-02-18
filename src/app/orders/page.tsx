@@ -2,7 +2,7 @@
 
 import { collection, onSnapshot } from 'firebase/firestore';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import thumbNail from '../../../public/static/images/avatar.jpg';
 import { useUser } from '../context/AuthContext';
 import { db } from '../lib/firebase';
@@ -44,7 +44,6 @@ const Orders: React.FC = () => {
                     };
                 });
                 setOrders(ordersData);
-                // console.log(ordersData)
             },
             (error) => {
                 console.error("Error fetching orders: ", error);
@@ -54,15 +53,10 @@ const Orders: React.FC = () => {
         return () => unsubscribe();
     }, [user, loading]);
 
-    if (loading) {
-        return <p className={styles.loading}>Loading orders...</p>;
-    }
+    if (loading) return <p className={styles.loading}>Loading orders...</p>;
 
-    if (!user) {
-        return <p className={styles.loading}>User not authenticated.</p>;
-    }
+    if (!user) return <p className={styles.loading}>User not authenticated.</p>;
 
-    // If the user doens't have any order history
     if (orders.length === 0) {
         return <div className={styles.ordersContainer}><h2>No orders found.</h2></div>;
     }
@@ -79,12 +73,10 @@ const Orders: React.FC = () => {
                                     <div className={styles.itemInfo}>
                                         <h3 className={styles.productName}>{item.name}</h3>
                                         <p className={styles.orderInfo}>Quantity: {item.quantity}</p>
-                                        <p className={styles.orderInfo}>Price: ${item.price.toFixed(2)}</p>
+                                        <p className={styles.orderInfo}>Price: ${(item.price / 100).toFixed(2)}</p>
                                     </div>
                                     <div className={styles.orderImageContainer}>
                                         <Image
-                                            // Workaround to not pass urls for actual images
-                                            // but still diplay on orders page.
                                             src={item.imageUrl || thumbNail}
                                             alt={item.name}
                                             className={styles.orderImage}
@@ -97,7 +89,7 @@ const Orders: React.FC = () => {
                             ))}
                         </div>
                         <div className={styles.orderSummary}>
-                            <h2 className={styles.total}>Total: ${order?.total?.toFixed(2)}</h2>
+                            <h2 className={styles.total}>Total: ${(order.total / 100).toFixed(2)}</h2>
                             <p className={styles.orderDate}>Ordered on: {order.date}</p>
                         </div>
                     </li>

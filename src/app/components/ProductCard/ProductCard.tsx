@@ -32,7 +32,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         />
       )}
       <h3>{product.name}</h3>
-      <p>${product.price.toFixed(2)}</p>
+      <p>${product.price / 100}</p>
       <div className={styles.actions}>
         <button onClick={handleAddToCart} className={styles.addToCartButton}>
           Add to Cart

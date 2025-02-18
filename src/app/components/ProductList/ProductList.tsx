@@ -11,7 +11,6 @@ interface ProductListProps {
 const ProductList: React.FC<ProductListProps> = ({ products }) => {
     return (
         <div className={styles.productListContainer}>
-            <h2>Products</h2>
             <div className={styles.productGrid}>
                 {products.map(product => (
                     <ProductCard key={product.id} product={product} />

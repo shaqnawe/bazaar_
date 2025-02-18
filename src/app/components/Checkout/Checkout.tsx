@@ -1,12 +1,11 @@
 'use client';
 
 import { handleError } from '@/utils/errorUtils';
-import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { loadStripe } from '@stripe/stripe-js';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../../context/AuthContext';
 import { useCart } from '../../context/cartContext';
-import { db } from '../../lib/firebase';
 import styles from './Checkout.module.css';
 
 interface CheckoutItem {
@@ -22,6 +21,9 @@ interface CheckoutData {
     total: number;
 }
 
+// Initialize Stripe with your publishable key
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+
 const Checkout: React.FC = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -29,6 +31,7 @@ const Checkout: React.FC = () => {
     const { setCartData } = useCart();
     const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
 
+    // On mount, parse the checkout data passed via query parameters.
     useEffect(() => {
         const data = searchParams.get('data');
         if (data) {
@@ -36,36 +39,47 @@ const Checkout: React.FC = () => {
         }
     }, [searchParams]);
 
+    // Triggered when the user clicks Confirm Order.
     const handleConfirmOrder = async () => {
         if (!user || !checkoutData) return;
         try {
-            const orderRef = collection(db, `users/${user.uid}/orders`);
-            await addDoc(orderRef, {
-                items: checkoutData.items,
-                total: checkoutData.total,
-                timestamp: new Date()
-            });
-            console.log("Order successfully placed!");
-
-            // Clear cart in Firestore
-            const cartRef = collection(db, `users/${user.uid}/cart`);
-            const cartSnapshot = await getDocs(cartRef);
-            cartSnapshot.forEach(async (item) => {
-                await deleteDoc(doc(db, `users/${user.uid}/cart`, item.id));
+            // Create a Stripe Checkout Session on the backend
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    items: checkoutData.items,
+                    userId: user.uid,
+                    // You can include additional info if needed.
+                })
             });
 
-            // Clear cart in React state
-            setCartData([]);
+            const sessionData = await response.json();
+            if (!response.ok) {
+                throw new Error(sessionData.error || 'Failed to create checkout session.');
+            }
 
-            // Redirect to post-checkout page
-            router.push('/postCheckout');
+            // Load Stripe.js and redirect to Stripe Checkout
+            const stripe = await stripePromise;
+            if (!stripe) {
+                throw new Error("Stripe.js failed to load.");
+            }
+            const { error } = await stripe.redirectToCheckout({
+                sessionId: sessionData.id,
+            });
+            if (error) {
+                throw error;
+            }
         } catch (error) {
-            // Using custom error handling to prevent using any
-            handleError(error)
+            handleError(error);
         }
     };
 
-    if (!checkoutData) return <p className={styles.spinner}>Loading checkout...</p>;
+    if (!checkoutData) {
+        return <p className={styles.spinner}>Loading checkout...</p>;
+    }
 
     return (
         <div className={styles.checkoutContainer}>
@@ -74,13 +88,15 @@ const Checkout: React.FC = () => {
                 {checkoutData.items.map((item: CheckoutItem) => (
                     <li key={item.id} className={styles.checkoutItem}>
                         <span>{item.name}</span>
-                        <span>${item.price.toFixed(2)}</span>
+                        <span>${(item.price / 100).toFixed(2)}</span>
                         <span>Quantity: {item.quantity}</span>
                     </li>
                 ))}
             </ul>
             <h2 className={styles.total}>Total: ${checkoutData.total.toFixed(2)}</h2>
-            <button className={styles.confirmButton} onClick={handleConfirmOrder}>Confirm Order</button>
+            <button className={styles.confirmButton} onClick={handleConfirmOrder}>
+                Confirm Order
+            </button>
         </div>
     );
 };

@@ -1,12 +1,6 @@
-import { doc, setDoc, getDoc, deleteDoc, collection, onSnapshot } from "firebase/firestore";
-import { db, auth } from "../app/lib/firebase";
-
-interface CartItem {
-    id: string;
-    name: string;
-    price: number;
-    quantity: number;
-}
+import { CartItem } from "@/types/cart";
+import { collection, deleteDoc, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+import { auth, db } from "../app/lib/firebase";
 
 // Add item to cart or increase quantity if already present.
 export const addToCart = async (product: CartItem) => {
@@ -31,6 +25,7 @@ export const addToCart = async (product: CartItem) => {
             await setDoc(cartItemRef, {
                 name: product.name,
                 price: product.price,
+                imageUrl: product.imageUrl ?? "",
                 quantity: 1,
                 createdAt: new Date()
             });
