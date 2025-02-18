@@ -55,7 +55,7 @@ const Favorites: React.FC = () => {
                         <li key={item.id} className={styles.favoriteItem}>
                             <div className={styles.itemDetails}>
                                 <h3 className={styles.itemName}>{item.name}</h3>
-                                <p className={styles.itemPrice}>${item.price.toFixed(2)}</p>
+                                <p className={styles.itemPrice}>${(item.price / 100).toFixed(2)}</p>
                                 <button
                                     onClick={() => removeFromFavorites(item.id)}
                                     className={styles.removeButton}
