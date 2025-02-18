@@ -11,7 +11,6 @@ export async function GET() {
         const products = await stripe.products.list({
             expand: ['data.default_price'],
         });
-        console.log(products.data)
         return NextResponse.json(products.data);
     } catch (error) {
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });
