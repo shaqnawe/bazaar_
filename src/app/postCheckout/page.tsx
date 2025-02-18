@@ -51,7 +51,7 @@ const PostCheckout: React.FC = () => {
                     stripeSessionId: sessionId,
                     timestamp: new Date(),
                     items, // store all cart items
-                    total: computedTotal,
+                    total: (computedTotal / 100).toFixed(2),
                 });
 
                 // Clear the user's cart from Firestore.

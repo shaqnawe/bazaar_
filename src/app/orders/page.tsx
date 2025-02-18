@@ -89,7 +89,7 @@ const Orders: React.FC = () => {
                             ))}
                         </div>
                         <div className={styles.orderSummary}>
-                            <h2 className={styles.total}>Total: ${(order.total / 100).toFixed(2)}</h2>
+                            <h2 className={styles.total}>Total: ${order.total}</h2>
                             <p className={styles.orderDate}>Ordered on: {order.date}</p>
                         </div>
                     </li>
