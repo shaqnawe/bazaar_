@@ -2,10 +2,9 @@
 
 import { handleError } from '@/utils/errorUtils';
 import { loadStripe } from '@stripe/stripe-js';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../../context/AuthContext';
-import { useCart } from '../../context/cartContext';
 import styles from './Checkout.module.css';
 
 interface CheckoutItem {
@@ -26,9 +25,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 const Checkout: React.FC = () => {
     const searchParams = useSearchParams();
-    const router = useRouter();
     const { user } = useUser();
-    const { setCartData } = useCart();
     const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
 
     // On mount, parse the checkout data passed via query parameters.

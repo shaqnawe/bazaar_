@@ -2,7 +2,7 @@
 
 import { addDoc, collection, deleteDoc, getDocs } from 'firebase/firestore';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useUser } from '../context/AuthContext';
 import { useCart } from '../context/cartContext';
 import { db } from '../lib/firebase';
@@ -13,10 +13,10 @@ interface CartItemData {
     price: number;      // Price is assumed to be a number (e.g., in dollars)
     quantity: number;
     imageUrl?: string;
-    createdAt?: any;
+    createdAt?: Date;
 }
 
-const PostCheckout: React.FC = () => {
+const PostCheckoutContent: React.FC = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { user } = useUser();
@@ -42,8 +42,11 @@ const PostCheckout: React.FC = () => {
                     };
                 });
 
-                // Calculate the total
-                const computedTotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                // Calculate the total (assuming price is in cents)
+                const computedTotal = items.reduce(
+                    (sum, item) => sum + item.price * item.quantity,
+                    0
+                );
 
                 // Save the order details to Firestore, including the items.
                 const orderRef = collection(db, `users/${user.uid}/orders`);
@@ -51,7 +54,7 @@ const PostCheckout: React.FC = () => {
                     stripeSessionId: sessionId,
                     timestamp: new Date(),
                     items, // store all cart items
-                    total: (computedTotal / 100).toFixed(2),
+                    total: (computedTotal / 100).toFixed(2), // convert cents to dollars and format as string
                 });
 
                 // Clear the user's cart from Firestore.
@@ -88,6 +91,14 @@ const PostCheckout: React.FC = () => {
                 </button>
             </div>
         </div>
+    );
+};
+
+const PostCheckout: React.FC = () => {
+    return (
+        <Suspense fallback={<p>Loading post-checkout details...</p>}>
+            <PostCheckoutContent />
+        </Suspense>
     );
 };
 
